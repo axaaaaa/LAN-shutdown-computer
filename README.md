@@ -95,10 +95,9 @@ pywin32
 你可以通过以下方式支持:
 
 - 微信支付
-![微信支付](wechat.png)
-
+<img src="wechat.png" width="200" alt="微信支付">
 
 - 支付宝
-![支付宝](alipay.jpg)
+<img src="alipay.jpg" width="200" alt="支付宝">
 
 感谢每一位支持者的慷慨相助！
