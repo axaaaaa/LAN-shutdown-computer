@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>电脑控制面板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 0 auto;
+            max-width: 450px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        .shutdown-btn {
+            background-color: #ff4d4f;
+            color: white;
+        }
+
+        .restart-btn {
+            background-color: #1890ff;
+            color: white;
+        }
+
+        .logout-btn {
+            background-color: #52c41a;
+            color: white;
+        }
+
+        .lock-btn {
+            background-color: #722ed1;
+            color: white;
+        }
+
+        .screen-off-btn {
+            background-color: #595959;
+            color: white;
+        }
+
+        .screen-on-btn {
+            background-color: #13c2c2;
+            color: white;
+        }
+
+        .timed-shutdown-container {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .uptime-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .uptime-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #1890ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .uptime-value {
+            font-size: 1.1rem;
+            color: #333;
+            font-family: monospace;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .input-group input {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .timed-btn {
+            background-color: #fa8c16;
+            color: white;
+            padding: 8px 16px;
+        }
+
+        .cancel-btn {
+            background-color: #8c8c8c;
+            color: white;
+            padding: 8px 16px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            word-break: break-word;
+        }
+
+        .success {
+            background-color: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+
+        .error {
+            background-color: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+        }
+
+        /* 添加图标字体 */
+        @font-face {
+            font-family: 'Material Icons';
+            font-style: normal;
+            font-weight: 400;
+            src: url(https://fonts.gstatic.com/s/materialicons/v139/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
+        }
+
+        .material-icons {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .buttons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                padding: 15px;
+                font-size: 1rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .input-group input {
+                width: 150px;
+            }
+        }
+
+        /* 深色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1f1f1f;
+                color: #ffffff;
+            }
+
+            .container {
+                background: #2d2d2d;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            }
+
+            h1 {
+                color: #ffffff;
+            }
+
+            .input-group input {
+                background-color: #1f1f1f;
+                border-color: #434343;
+                color: #ffffff;
+            }
+
+            .timed-shutdown-container {
+                border-top-color: #434343;
+            }
+
+            .uptime-container {
+                background-color: #1f1f1f;
+            }
+
+            .uptime-value {
+                color: #ffffff;
+            }
+
+            #message.success {
+                background-color: rgba(82, 196, 26, 0.1);
+                border-color: rgba(82, 196, 26, 0.3);
+            }
+
+            #message.error {
+                background-color: rgba(255, 77, 79, 0.1);
+                border-color: rgba(255, 77, 79, 0.3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>电脑控制面板</h1>
+        <div class="buttons-grid">
+            <button onclick="sendCommand('shutdown')" class="btn shutdown-btn">
+                <i class="material-icons">power_settings_new</i>
+                关机
+            </button>
+            <button onclick="sendCommand('restart')" class="btn restart-btn">
+                <i class="material-icons">refresh</i>
+                重启
+            </button>
+            <button onclick="sendCommand('logout')" class="btn logout-btn">
+                <i class="material-icons">logout</i>
+                注销
+            </button>
+            <button onclick="sendCommand('lock')" class="btn lock-btn">
+                <i class="material-icons">lock</i>
+                锁定
+            </button>
+            <button onclick="sendCommand('screen_off')" class="btn screen-off-btn">
+                <i class="material-icons">tv_off</i>
+                关屏
+            </button>
+            <button onclick="sendCommand('screen_on')" class="btn screen-on-btn">
+                <i class="material-icons">tv</i>
+                开屏
+            </button>
+            <button onclick="takeScreenshot()" class="btn">
+                <i class="material-icons">photo_camera</i>
+                屏幕截图
+            </button>
+        </div>
+
+        <div class="uptime-container">
+            <div class="uptime-title">
+                <i class="material-icons">timer</i>
+                系统运行时间
+            </div>
+            <div id="uptime" class="uptime-value">
+                正在获取...
+            </div>
+        </div>
+
+        <div class="timed-shutdown-container">
+            <h2>定时关机</h2>
+            <div class="input-group">
+                <input type="number" id="shutdownMinutes" min="1" placeholder="分钟" value="30">
+                <button onclick="sendTimedShutdown()" class="btn timed-btn">
+                    <i class="material-icons">timer</i>
+                    定时关机
+                </button>
+                <button onclick="sendCommand('cancel_shutdown')" class="btn cancel-btn">
+                    <i class="material-icons">timer_off</i>
+                    取消定时
+                </button>
+            </div>
+        </div>
+
+        <div id="message" style="display: none;"></div>
+    </div>
+
+    <script>
+        // 更新运行时间的函数
+        function updateUptime() {
+            fetch('/get_uptime')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const uptime = data.data;
+                        const text = `${uptime.days}天 ${uptime.hours}小时 ${uptime.minutes}分钟 ${uptime.seconds}秒`;
+                        document.getElementById('uptime').textContent = text;
+                    } else {
+                        document.getElementById('uptime').textContent = '无法获取运行时间';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('uptime').textContent = '获取运行时间失败';
+                });
+        }
+
+        // 每秒更新一次运行时间
+        updateUptime();
+        setInterval(updateUptime, 1000);
+
+        function sendCommand(command) {
+            const commandText = {
+                'shutdown': '关机',
+                'restart': '重启',
+                'logout': '注销',
+                'lock': '锁定屏幕',
+                'screen_off': '关闭屏幕',
+                'screen_on': '开启屏幕',
+                'cancel_shutdown': '取消定时关机'
+            };
+            if (confirm(`确定要${commandText[command]}吗？`)) {
+                fetch(`/${command}`, {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showMessage(data.message, data.status === 'success');
+                })
+                .catch(error => {
+                    showMessage('操作失败: ' + error, false);
+                });
+            }
+        }
+
+        function sendTimedShutdown() {
+            const minutes = parseInt(document.getElementById('shutdownMinutes').value);
+            if (isNaN(minutes) || minutes < 1) {
+                showMessage('请输入有效的分钟数', false);
+                return;
+            }
+            if (confirm(`确定要在${minutes}分钟后关机吗？`)) {
+                fetch('/timed_shutdown', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ minutes: minutes })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showMessage(data.message, data.status === 'success');
+                })
+                .catch(error => {
+                    showMessage('操作失败: ' + error, false);
+                });
+            }
+        }
+
+        function takeScreenshot() {
+            showMessage('正在获取截图...');
+            
+            // 在新窗口中打开截图
+            window.open('/screenshot', '_blank');
+        }
+
+        function showMessage(text, type = 'info') {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = type;
+            message.style.display = 'block';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
